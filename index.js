@@ -7,17 +7,18 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
-app.post('/save/stacks', db.createUser);
+app.post('/stacks/save', db.createUserUsingStack);
 
 
-app.get('/', (request, responce) => {
-    responce.json({message: "It works"});
+app.get('/', (request, response) => {
+    response.json({message: "It works"});
 });
+
+
 
 app.listen(port, () => {
     console.log (`running on ${port}`);
 })
-
 /*
 
 CRUD -create (save, post) Retrieve (get, fetch), Update modify, put), Delete (remove, purge, prune)

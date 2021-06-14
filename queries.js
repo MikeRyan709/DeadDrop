@@ -8,22 +8,6 @@ const pool = new Pool({
   port: 5432,
 });
 
-const stack = new Stack();
-const createUser = async (request, responce) => {
-    const {data, agentid, structureid} = request.body
-    
-    //stack.push(.)
-
-  pool.query(
-    "INSERT INTO agent (data, agendid, structureid) VALUES ($1, $2, $3)",
-    [date, agentid, structureid],
-    (error, result) => {
-      if (error) throw error;
-      responce.status(201).json("user successfully created");
-    }
-  );
-};
-
 class Stack {
   constructor() {
     this.items = [];
@@ -32,22 +16,41 @@ class Stack {
 
   push(element) {
     this.items[this.count] = element;
-    console.log(`${element} added to ${this.count}`);
+    console.log(`added to ${this.count}`);
     this.count += 1;
-    try{
-    createUser(null, null, element)
-    }
-    catch(error) {
-        console.error(error)
-    }
+
     return this.count - 1;
   }
 }
 
-module.exports ={
-    stack,
-    createUser
+const stack = new Stack();
+
+const createUserUsingStack = async (request, response) => {
+  let agentid, structureid, data;
+  data = request.body.data;
+  agentid = request.body.agentid;
+  structureid = request.body.structureid;
+
+  const element = { agentid, structureid, data }
+  const elementPositionInStack = stack.push(element)
+  console.log("Added element to stack at position:", elementPositionInStack)
+
+  pool.query(
+    "INSERT INTO stacks (agentid, structureid, data) VALUES ($1, $2, $3)",
+    [agentid, structureid, data],
+    (error, result) => {
+      if (error) {
+        response.status(500).send(error);
+      }
+      else {
+        response.status(201).json("user successfully created");
+      }
+    }
+  );
 };
 
+module.exports = {
+  createUserUsingStack,
+};
 
 
