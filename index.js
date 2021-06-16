@@ -8,13 +8,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
 
 app.post('/stacks/save', db.createUserUsingStack);
-
+app.post('/queue/save', db.createUserUsingQueue);
 
 app.get('/', (request, response) => {
     response.json({message: "It works"});
 });
-
-
 
 app.listen(port, () => {
     console.log (`running on ${port}`);

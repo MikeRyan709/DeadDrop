@@ -49,8 +49,51 @@ const createUserUsingStack = async (request, response) => {
   );
 };
 
+class Queue {
+  constructor() {
+    this.items = [];
+    this.count = 0;
+  }
+
+  push(element) {
+    this.items[this.count] = element;
+    console.log(`added to ${this.count}`);
+    this.count += 1;
+
+    return this.count - 1;
+  }
+}
+
+const queue = new Queue();
+
+const createUserUsingQueue = async (request, response) => {
+  let agentid, structureid, data;
+  data = request.body.data;
+  agentid = request.body.agentid;
+  structureid = request.body.structureid;
+
+  const element = { agentid, structureid, data }
+  const elementPositionInQueue = queue.push(element)
+  console.log("Added element to queue at position:", elementPositionInQueue)
+
+  pool.query(
+    "INSERT INTO queue (agentid, structureid, data) VALUES ($1, $2, $3)",
+    [agentid, structureid, data],
+    (error, result) => {
+      if (error) {
+        response.status(500).send(error);
+      }
+      else {
+        response.status(201).json("user successfully created");
+      }
+    }
+  );
+};
+
+
 module.exports = {
   createUserUsingStack,
+  createUserUsingQueue,
 };
 
 
