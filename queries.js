@@ -90,10 +90,33 @@ const createUserUsingQueue = async (request, response) => {
   );
 };
 
+const getStackMessageById = (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+
+  pool.query('SELECT * FROM stacks WHERE structureid = $1 ORDER BY messageid DESC LIMIT 1',[structureid], (error, results) => {
+    if (error){
+      throw error
+    }
+    response.status(200).json(results.rows)
+  });
+};
+
+const getQueueMessageById = (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+
+  pool.query['SELECT * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  }]
+}
 
 module.exports = {
   createUserUsingStack,
   createUserUsingQueue,
+  getStackMessageById,
+  getQueueMessageById 
 };
 
 

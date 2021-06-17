@@ -1,17 +1,23 @@
 const express = require('express');
-const app = express();
-const db = require('./queries')
+const bodyParser = require('body-parser');
+const db = require('./queries');
+let path = require('path')
 
+const app = express();
 const port = 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 
 app.post('/stacks/save', db.createUserUsingStack);
 app.post('/queue/save', db.createUserUsingQueue);
 
-app.get('/', (request, response) => {
-    response.json({message: "It works"});
+app.get('/readStack', db.getStackMessageById);
+app.get('/readQueue', db.getQueueMessageById);
+
+app.get('/old', (request, response) => {
+    response.json({messageid: "It works"});
+    
 });
 
 app.listen(port, () => {
