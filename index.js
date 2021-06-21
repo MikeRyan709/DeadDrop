@@ -18,6 +18,9 @@ app.get('/readqueue', db.getQueueMessageById);
 
 app.get('/old', (request, response) => {
     response.json({messageid: "It works"});
+
+app.delete('/delectstacks', db.deleteStackMessageById);
+app.delete('/deletequeue', db.deleteQueueMessageById);
     
 });
 

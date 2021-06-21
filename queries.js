@@ -1,5 +1,7 @@
 const Pool = require("pg").Pool;
 
+// setting up a database to run on node.js
+
 const pool = new Pool({
   user: "agent",
   host: "localhost",
@@ -7,6 +9,8 @@ const pool = new Pool({
   password: "password",
   port: 5432,
 });
+
+// setting up a class function for stack
 
 class Stack {
   constructor() {
@@ -23,6 +27,8 @@ class Stack {
   }
 }
 
+// Creating a stack to connect to the database
+
 const stack = new Stack();
 
 const createUserUsingStack = async (request, response) => {
@@ -35,6 +41,7 @@ const createUserUsingStack = async (request, response) => {
   const elementPositionInStack = stack.push(element)
   console.log("Added element to stack at position:", elementPositionInStack)
 
+  // ceating a query and setting up error function
   pool.query(
     "INSERT INTO stacks (agentid, structureid, data) VALUES ($1, $2, $3)",
     [agentid, structureid, data],
@@ -48,6 +55,8 @@ const createUserUsingStack = async (request, response) => {
     }
   );
 };
+
+// setting up a class for queue
 
 class Queue {
   constructor() {
@@ -64,6 +73,8 @@ class Queue {
   }
 }
 
+// Creating a queue to connect to the database
+
 const queue = new Queue();
 
 const createUserUsingQueue = async (request, response) => {
@@ -75,6 +86,8 @@ const createUserUsingQueue = async (request, response) => {
   const element = { agentid, structureid, data }
   const elementPositionInQueue = queue.push(element)
   console.log("Added element to queue at position:", elementPositionInQueue)
+
+  // creating a query and setting up error function
 
   pool.query(
     "INSERT INTO queue (agentid, structureid, data) VALUES ($1, $2, $3)",
@@ -90,33 +103,48 @@ const createUserUsingQueue = async (request, response) => {
   );
 };
 
+// creating a function to get messageid from stacks and setting up error function
 const getStackMessageById = async (request, response) => {
   const structureid = parseInt(request.params.structureid)
+
 
   pool.query('SELECT * FROM stacks WHERE structureid = $1 ORDER BY messageid DESC LIMIT 1',[structureid], (error, results) => {
     if (error){
       throw error
     }
+    //WE WANT TO DELETE HERE!
+
+const deleteStackMessageById = (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+    pool.query('DELETE * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid])
+  }
+    response.status(200).json(results.rows)
+  });
+}
+// creating a function to get messageid from queue and setting up error function
+
+const getQueueMessageById = async (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+pool.query('SELECT * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid], (error, results) => {
+    if (error) {
+      throw error
+    }
+// setting up a delete function to remove query messageid from queue
+
+const deleteQueueMessageById = (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+  pool.query('DELETE * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid])
+    }
     response.status(200).json(results.rows)
   });
 };
 
-const getQueueMessageById = async (request, response) => {
-  const structureid = parseInt(request.params.structureid)
-
-  pool.query['SELECT * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid], (error, results) => {
-    if (error) {
-      throw error
-    }
-    response.status(200).json(results.rows)
-  }]
-}
 
 module.exports = {
   createUserUsingStack,
   createUserUsingQueue,
   getStackMessageById,
-  getQueueMessageById 
-};
+  getQueueMessageById,
 
-
+}
+  
