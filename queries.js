@@ -105,46 +105,57 @@ const createUserUsingQueue = async (request, response) => {
 
 // creating a function to get messageid from stacks and setting up error function
 const getStackMessageById = async (request, response) => {
-  const structureid = parseInt(request.params.structureid)
+  const structureid = parseInt(request.body.structureid)
 
 
-  pool.query('SELECT * FROM stacks WHERE structureid = $1 ORDER BY messageid DESC LIMIT 1',[structureid], (error, results) => {
-    if (error){
-      throw error
-    }
-    //WE WANT TO DELETE HERE!
-
-const deleteStackMessageById = (request, response) => {
-  const structureid = parseInt(request.params.structureid)
-    pool.query('DELETE * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid])
-  }
-    response.status(200).json(results.rows)
-  });
-}
-// creating a function to get messageid from queue and setting up error function
-
-const getQueueMessageById = async (request, response) => {
-  const structureid = parseInt(request.params.structureid)
-pool.query('SELECT * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid], (error, results) => {
+  pool.query('SELECT * FROM stacks WHERE structureid = $1 ORDER BY messageid DES LIMIT 1', [structureid], (error, results) => {
     if (error) {
       throw error
     }
+    response.status(200).json(results.rows[0])
+  });
+}
+
+const deleteStackMessageById = (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+  pool.query('DELETE * FROM stacks WHERE structureid = $1', [structureid], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).send("message deleted(from stacks)")
+  }
+  )
+}
+
+const getQueueMessageById = async (request, response) => {
+  const structureid = parseInt(request.params.structureid)
+  pool.query('SELECT * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1', [structureid], (error, results) => {
+    if (error) {
+      throw error
+    }
+    response.status(200).json(results.rows)
+  }
+  )
+}
 // setting up a delete function to remove query messageid from queue
 
 const deleteQueueMessageById = (request, response) => {
   const structureid = parseInt(request.params.structureid)
-  pool.query('DELETE * FROM queue WHERE structureid = $1 ORDER BY messageid ASC LIMIT 1',[structureid])
+  pool.query('DELETE * FROM queue WHERE structureid = $1', [structureid], (error, results) => {
+    if (error) {
+      throw error
     }
-    response.status(200).json(results.rows)
-  });
+    response.status(200).send("message deleted(from queue)")
+  }
+  )
 };
-
 
 module.exports = {
   createUserUsingStack,
   createUserUsingQueue,
   getStackMessageById,
   getQueueMessageById,
+  deleteQueueMessageById,
+  deleteStackMessageById
 
 }
-  

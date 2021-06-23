@@ -3,14 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Military Agency</title>
     
 </head>
 <body>
-    <input placeholder= "enter your message" type="text"><br>
+    <div>
+    
+        <div className ="m-5">
+            <h5>Agentid: {getStackMessageById.agentid}</h5>
+            <h5>structureid: {getQueueMessageById.structureid}</h5>
+            <h5 className= "mt-4">Message: {message.message}</h5>
+        </div>
 
-    <input placeholder= "enter id" type="text"><br>
+        <input placeholder= "enter id" type="text"><br>
 
-    <button>click to submit</button>
+        <button
+        className placeholder ="submit">
+        </button>
+        
+    </div>
+
+
+
 </body>
 </html>
